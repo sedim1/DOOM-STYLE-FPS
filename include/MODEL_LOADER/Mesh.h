@@ -3,15 +3,10 @@
 
 #include <vector>
 #include "BO.h"
+#include "Shader.h"
 #include "Texture.h"
 
 using namespace std;
-
-struct Vertex{
-	vector<float> position;
-	vector<float> Normal;
-	vector<float> TexCoord;
-};
 
 class Mesh{
 	private:
@@ -22,7 +17,7 @@ class Mesh{
 		vector<Vertex>vertices;
 		vector<unsigned int>indices;
 		Texture texture;
-		setUpMesh(){
+		void setUpMesh(){
 			vao.Bind();
 			vbo.MeshData(vertices);
 			ebo.IndexData(indices);
@@ -36,6 +31,13 @@ class Mesh{
 			this->indices = indices;
 			this->texture = texture;
 			setUpMesh();
+		}
+		void drawMesh(Shader& program){
+			program.use();
+			texture.ViewTextures(program);
+			vao.Bind();
+			glDrawElements(GL_TRIANGLES,indices.size(),GL_UNSIGNED_INT,0);
+			vao.Unbind();
 		}
 };
 

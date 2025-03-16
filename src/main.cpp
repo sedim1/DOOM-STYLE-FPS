@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "BO.h"
+#include "MODEL_LOADER/Mesh.h"
 #include "Camera.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);

@@ -84,6 +84,7 @@ class Texture{
 				glActiveTexture(GL_TEXTURE0 + i);
 				glBindTexture(GL_TEXTURE_2D,id[i]);
 			}
+                        glActiveTexture(GL_TEXTURE0);
 		}
 };
 
