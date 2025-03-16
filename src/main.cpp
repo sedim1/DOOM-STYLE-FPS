@@ -60,10 +60,10 @@ int main()
 
     Shader program = Shader("../SHADERS/vertex.vs","../SHADERS/fragment.fs");
 
-    VAO vao = VAO();
+    VAO vao; VBO vbo; EBO ebo;
     vao.Bind();
-    VBO vbo(vertices);
-    EBO ebo(indices);
+    vbo.Data(vertices);
+    ebo.IndexData(indices);
     vao.Attrib(0,3,5,0);
     vao.Attrib(1,2,5,3);
     vao.Unbind();
@@ -141,9 +141,6 @@ int main()
     //glDeleteVertexArrays(1, &VAO);
     //glDeleteBuffers(1, &VBO);
     //glDeleteBuffers(1, &EBO);
-    vao.Delete();
-    vbo.Delete();
-    ebo.Delete();
     glfwTerminate();
     return 0;
 }

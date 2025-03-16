@@ -61,14 +61,14 @@ class Camera{
 			float steps = 0.1f;
 
 			if(glfwGetKey(w, GLFW_KEY_LEFT) == GLFW_PRESS)
-				yaw -= steps * 5;
+				yaw -= steps * 50;
 			if(glfwGetKey(w, GLFW_KEY_RIGHT) == GLFW_PRESS)
-				yaw += steps * 5;
+				yaw += steps * 50;
 			if(glfwGetKey(w, GLFW_KEY_UP) == GLFW_PRESS){
-				pitch += steps * 5;
+				pitch += steps * 50;
 			}
 			if(glfwGetKey(w, GLFW_KEY_DOWN) == GLFW_PRESS){
-				pitch -= steps * 5;
+				pitch -= steps * 50;
 			}
 
 			if(pitch > 89.0f)
