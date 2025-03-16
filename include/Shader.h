@@ -42,8 +42,8 @@ class Shader{
 		Shader(std::string v,std::string f){
 			int success;
 			char infoLog[512];
-			const char* vertexSource = loadShaderFile(v.data());
-			const char* fragmentSource = loadShaderFile(f.data());
+			char* vertexSource = loadShaderFile(v.data());
+			char* fragmentSource = loadShaderFile(f.data());
 			if(vertexSource == NULL && fragmentSource == NULL){
 				std::cout<<"ERROR::FILES NOT LOCATED::"<<std::endl;
 			}
@@ -60,6 +60,8 @@ class Shader{
 			}
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
+			free(vertexSource);
+			free(fragmentSource);
 		}
 		~Shader(){
 			glDeleteProgram(id);

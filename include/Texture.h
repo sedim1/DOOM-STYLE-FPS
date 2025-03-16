@@ -15,6 +15,11 @@ class Texture{
 		vector<unsigned int> id;
 	public:
 		Texture(){}
+                ~Texture(){
+                        for(int i = 0;i < id.size();i++)
+                                glDeleteTextures(1,&id[i]);
+                        id.clear();
+                }
 		void createTexture(const char* path,int e){
 			unsigned int tex;
 			//GenTexture

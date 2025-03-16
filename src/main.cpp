@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "Shader.h"
 #include "Texture.h"
+#include "Camera.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -85,8 +86,14 @@ int main()
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
 
-    textures.createTexture("../TEXTURES/sample.png",0);
-    textures.createTexture("../TEXTURES/face.png",0);
+    textures.createTexture("../TEXTURES/Checker.jpg",0);
+    //textures.createTexture("../TEXTURES/face.png",0);
+
+    Camera camera = Camera();
+    camera.position.z = -1.5f;
+    camera.updateProjection(SCR_WIDTH,SCR_HEIGHT,program);
+
+    glEnable(GL_DEPTH_TEST);
 
     // render loop
     // -----------
@@ -95,14 +102,15 @@ int main()
         // input
         // -----
         processInput(window);
-
+        camera.spectateMode(window);
         // render
         // ------
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
+        camera.updateView(program);
 	textures.ViewTextures(program);
 	program.use();
 	glBindVertexArray(VAO);
