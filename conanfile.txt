@@ -1,0 +1,8 @@
+[requires]
+glfw/3.4
+glm/cci.20230113
+assimp/5.0.1
+
+[generators]
+CMakeDeps
+CMakeToolchain
