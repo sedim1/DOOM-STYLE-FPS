@@ -82,10 +82,12 @@ class Shader{
 		}
 		//UniformVariables
 		void setMatrix4f(glm::mat4 matrix,const char* uniform){
+			use();
 			int location = glGetUniformLocation(id,uniform);
 			glUniformMatrix4fv(location,1,GL_FALSE,glm::value_ptr(matrix));
 		}
 		void setInt(int x,const char* uniform){
+			use();
 			int location = glGetUniformLocation(id,uniform);
 			glUniform1i(location,x);
 		}

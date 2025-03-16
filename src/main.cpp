@@ -1,7 +1,8 @@
 #include <iostream>
 #include "glad/glad.h"
-#include "Shader.h"
 #include <GLFW/glfw3.h>
+#include "Shader.h"
+#include "Texture.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -41,15 +42,18 @@ int main()
     } 
 
     float vertices[] = {
-         0.5f,  0.5f, 0.0f,  // top right
-         0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left 
+	    //Position	     UV
+	    -0.5f,0.5f,0.0f, 0.0f,0.0f,//top-left
+	    0.5f,0.5f,0.0f, 1.0f,0.0f,//top-right
+	    -0.5f,-0.5f,0.0f, 0.0f,1.0f,//bottom-left
+	    0.5f,-0.5f,0.0f, 1.0f,1.0f,//top-left
     };
     unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 3,  // first Triangle
-        1, 2, 3   // second Triangle
+        0, 1, 2,  // first Triangle
+        1, 2, 3,   // second Triangle
     };
+
+    Texture textures = Texture();
 
     Shader program = Shader("../SHADERS/vertex.vs","../SHADERS/fragment.fs");
 
@@ -66,8 +70,10 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
@@ -78,6 +84,9 @@ int main()
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
+
+    textures.createTexture("../TEXTURES/sample.png",0);
+    textures.createTexture("../TEXTURES/face.png",0);
 
     // render loop
     // -----------
@@ -94,6 +103,7 @@ int main()
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
+	textures.ViewTextures(program);
 	program.use();
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
