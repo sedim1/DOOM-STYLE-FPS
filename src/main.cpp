@@ -1,8 +1,10 @@
 #include <iostream>
+#include <vector>
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include "Shader.h"
 #include "Texture.h"
+#include "BO.h"
 #include "Camera.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -42,14 +44,14 @@ int main()
         return -1;
     } 
 
-    float vertices[] = {
+    std::vector<float>vertices = {
 	    //Position	     UV
 	    -0.5f,0.5f,0.0f, 0.0f,0.0f,//top-left
 	    0.5f,0.5f,0.0f, 1.0f,0.0f,//top-right
 	    -0.5f,-0.5f,0.0f, 0.0f,1.0f,//bottom-left
 	    0.5f,-0.5f,0.0f, 1.0f,1.0f,//top-left
     };
-    unsigned int indices[] = {  // note that we start from 0!
+    std::vector<unsigned int>indices = {  // note that we start from 0!
         0, 1, 2,  // first Triangle
         1, 2, 3,   // second Triangle
     };
@@ -58,6 +60,18 @@ int main()
 
     Shader program = Shader("../SHADERS/vertex.vs","../SHADERS/fragment.fs");
 
+    VAO vao = VAO();
+    vao.Bind();
+    VBO vbo(vertices);
+    EBO ebo(indices);
+    vao.Attrib(0,3,5,0);
+    vao.Attrib(1,2,5,3);
+    vao.Unbind();
+    vbo.Unbind();
+    ebo.Unbind();
+
+
+    /*
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -66,10 +80,10 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -85,6 +99,7 @@ int main()
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
 
     textures.createTexture("../TEXTURES/Checker.jpg",0);
     //textures.createTexture("../TEXTURES/face.png",0);
@@ -113,17 +128,22 @@ int main()
         camera.updateView(program);
 	textures.ViewTextures(program);
 	program.use();
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	//glBindVertexArray(VAO);
+        vao.Bind();
+        //ebo.Bind();
+	glDrawElements(GL_TRIANGLES,indices.size() , GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+    //glDeleteVertexArrays(1, &VAO);
+    //glDeleteBuffers(1, &VBO);
+    //glDeleteBuffers(1, &EBO);
+    vao.Delete();
+    vbo.Delete();
+    ebo.Delete();
     glfwTerminate();
     return 0;
 }
