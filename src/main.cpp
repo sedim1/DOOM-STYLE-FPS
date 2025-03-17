@@ -60,7 +60,7 @@ int main()
 
     Shader program = Shader("SHADERS/vertex.vs","SHADERS/fragment.fs");
 
-    Model Luigi("MODELS/Popka/Popka/Popka (High).gltf");
+    Model Luigi("MODELS/Rouge/Rouge.gltf");
 
     Camera camera = Camera();
     camera.position.z = -1.5f;
