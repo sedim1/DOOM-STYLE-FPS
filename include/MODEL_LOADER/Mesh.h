@@ -2,6 +2,7 @@
 #define MESH_H
 
 #include <vector>
+#include <string>
 #include "BO.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -16,7 +17,7 @@ class Mesh{
 	public:
 		vector<Vertex>vertices;
 		vector<unsigned int>indices;
-		Texture texture;
+		vector<Texture>textures;
 		void setUpMesh(){
 			vao.Bind();
 			vbo.MeshData(vertices);
@@ -26,15 +27,18 @@ class Mesh{
 			vbo.Unbind();
 			ebo.Unbind();
 		}
-		Mesh(vector<Vertex>& vertices,vector<unsigned int>& indices,Texture& texture){
+		Mesh(vector<Vertex>& vertices,vector<unsigned int>& indices,vector<Texture>& textures){
 			this->vertices = vertices;
 			this->indices = indices;
-			this->texture = texture;
+			this->textures = textures;
 			setUpMesh();
 		}
 		void drawMesh(Shader& program){
-			program.use();
-			texture.ViewTextures(program);
+			for(int i = 0; i < textures.size();i++){
+				string uniform = "texture" + to_string(i);
+				textures[i].texUnit(program,uniform.data(),i);
+				textures[i].BindTexture(program);
+			}
 			vao.Bind();
 			glDrawElements(GL_TRIANGLES,indices.size(),GL_UNSIGNED_INT,0);
 			vao.Unbind();

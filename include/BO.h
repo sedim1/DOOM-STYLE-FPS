@@ -3,15 +3,17 @@
 
 #include <iostream>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 #include <vector>
 
 using namespace std;
+using namespace glm;
 
 //For a mesh
 struct Vertex{
-	vector<float> position;
-	vector<float> Normal;
-	vector<float> TexCoord;
+	vec3 Position;
+	vec3 Normal;
+	vec2 TexCoord;
 };
 
 class VAO{
@@ -36,14 +38,14 @@ class VAO{
 		}
 		void AttribMesh(vector<Vertex>& vertices){ //When using the vertex struct is fixed for setting a mesh
 			//Positions
-			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)0);
+			glEnableVertexAttribArray(0);
 			//Normals
-			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)(offsetof(Vertex,Normal)));
+			glEnableVertexAttribArray(1);
 			//Texture Coordinates
+			glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)(offsetof(Vertex,TexCoord)));
 			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)(offsetof(Vertex,TexCoord)));
 		}
 };
 

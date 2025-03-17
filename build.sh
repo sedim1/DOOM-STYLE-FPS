@@ -28,7 +28,7 @@ cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.c
 cmake --build .
 
 # Ejecuta el binario resultante (suponiendo que el nombre sea correcto)
-./DOOM_STYLE
+#./DOOM_STYLE
 
 popd
 

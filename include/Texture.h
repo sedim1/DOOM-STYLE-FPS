@@ -11,20 +11,13 @@
 using namespace std;
 
 class Texture{
-	private:
-		vector<unsigned int> id;
 	public:
-		Texture(){}
-                ~Texture(){
-                        for(int i = 0;i < id.size();i++)
-                                glDeleteTextures(1,&id[i]);
-                        id.clear();
-                }
-		void createTexture(const char* path,int e){
-			unsigned int tex;
-			//GenTexture
-			glGenTextures(1,&tex);
-			glBindTexture(GL_TEXTURE_2D,tex);
+                GLuint ID;
+                GLuint unit;
+		Texture(const char* path,int e,GLuint unit){
+                        glGenTextures(1,&ID);
+			glBindTexture(GL_TEXTURE_2D,ID);
+                        this->unit = unit;
 			//Set expansion mode
 			if (e == 0)
         		{
@@ -54,8 +47,8 @@ class Texture{
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			//Loading image Texture
 			int width, height, nrChannels;
-			unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
 			stbi_set_flip_vertically_on_load(true);
+			unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
 			 if (data)
         		{
             			GLenum format;
@@ -68,23 +61,20 @@ class Texture{
 
             			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             			glGenerateMipmap(GL_TEXTURE_2D);
-				id.push_back(tex);
         		}
         		else
        	 		{
             			cout << "ERROR::COULD NOT LOAD TEXTURE "<< path << endl;
         		}
-			glBindTexture(GL_TEXTURE_2D,0);
         		stbi_image_free(data);
-		}
-		void ViewTextures(Shader& program){
-			for(int i = 0; i < id.size();i++){
-				string uniform = "texture" + to_string(i+1);
-				program.setInt(i,uniform.data());
-				glActiveTexture(GL_TEXTURE0 + i);
-				glBindTexture(GL_TEXTURE_2D,id[i]);
-			}
-                        glActiveTexture(GL_TEXTURE0);
+                }
+                ~Texture(){}
+                void texUnit(Shader& shader,const char* uniform,int u){
+                        shader.setInt(u,uniform);
+                }
+		void BindTexture(Shader& program){
+                        glActiveTexture(GL_TEXTURE0 + unit);
+                        glBindTexture(GL_TEXTURE_2D,ID);
 		}
 };
 

@@ -91,7 +91,11 @@ class Shader{
 		void setInt(int x,const char* uniform){
 			use();
 			int location = glGetUniformLocation(id,uniform);
-			glUniform1i(location,x);
+			if(location!=-1)
+				glUniform1i(location,x);
+			else{
+				std::cout<<"ERROR::Could not assign "<<x<<" to "<<uniform<<" because it is not found::"<<std::endl;
+			}
 		}
 };
 
