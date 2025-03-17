@@ -32,7 +32,7 @@ class Model{
 		void loadModel(const string& path){
 			//Load the model file
 			Importer importer;
-			const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate);
+			const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 			if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE | !scene->mRootNode){
 				cout << "ERROR::COULD NOT LOAD " << path << endl;
 				return;
