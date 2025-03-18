@@ -46,6 +46,7 @@ class Shader{
 			char* fragmentSource = loadShaderFile(f.data());
 			if(vertexSource == NULL && fragmentSource == NULL){
 				std::cout<<"ERROR::FILES NOT LOCATED::"<<std::endl;
+				return;
 			}
 			unsigned int vertexShader = createShader(vertexSource,GL_VERTEX_SHADER);
 			unsigned int fragmentShader = createShader(fragmentSource,GL_FRAGMENT_SHADER);
@@ -57,7 +58,9 @@ class Shader{
 			if(!success){
 				glGetProgramInfoLog(id, 512, NULL, infoLog);
 				std::cout<<"LINKING::ERROR::"<<infoLog<<std::endl;
+				return;
 			}
+			std::cout<<"::SHADER PROGRAM CREATED SUCCESSFULLY::"<<std::endl;
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
 			free(vertexSource);

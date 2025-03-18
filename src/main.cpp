@@ -58,9 +58,10 @@ int main()
         1, 2, 3,   // second Triangle
     };
 
-    Shader program = Shader("SHADERS/vertex.vs","SHADERS/fragment.fs");
+    Shader program = Shader("SHADERS/primitive.vs","SHADERS/fragment.fs");
 
-    Model Luigi("MODELS/Rouge/Rouge.gltf");
+    //Model Luigi("MODELS/Rouge/Rouge.gltf");
+    Plane plane(10.0f,5.0f);
 
     Camera camera = Camera();
     camera.position.z = -1.5f;
@@ -85,7 +86,8 @@ int main()
         // -------------------------------------------------------------------------------
         camera.updateView(program);
 	program.use();
-        Luigi.Draw(program);
+        //Luigi.Draw(program);
+        plane.drawMesh(program);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
