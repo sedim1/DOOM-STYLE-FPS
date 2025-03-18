@@ -58,14 +58,17 @@ int main()
         1, 2, 3,   // second Triangle
     };
 
-    Shader program = Shader("SHADERS/primitive.vs","SHADERS/fragment.fs");
+    Shader program = Shader("SHADERS/vertex.vs","SHADERS/fragment.fs");
+    Shader primitive = Shader("SHADERS/primitive.vs","SHADERS/primitive.fs");
 
-    //Model Luigi("MODELS/Rouge/Rouge.gltf");
-    Plane plane(10.0f,5.0f);
+    Model Luigi("MODELS/Rouge/Rouge.gltf");
+    Cube cube(5.0f,5.0f,5.0);
 
     Camera camera = Camera();
     camera.position.z = -1.5f;
+    camera.position.y = 1.0f;
     camera.updateProjection(SCR_WIDTH,SCR_HEIGHT,program);
+    camera.updateProjection(SCR_WIDTH,SCR_HEIGHT,primitive);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -84,10 +87,12 @@ int main()
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
-        camera.updateView(program);
 	program.use();
-        //Luigi.Draw(program);
-        plane.drawMesh(program);
+        camera.updateView(program);
+        Luigi.Draw(program);
+        primitive.use();
+        camera.updateView(primitive);
+        cube.drawMesh(primitive);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
