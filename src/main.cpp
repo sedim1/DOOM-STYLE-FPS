@@ -46,23 +46,11 @@ int main()
         return -1;
     } 
 
-    std::vector<float>vertices = {
-	    //Position	     UV
-	    -0.5f,0.5f,0.0f, 0.0f,0.0f,//top-left
-	    0.5f,0.5f,0.0f, 1.0f,0.0f,//top-right
-	    -0.5f,-0.5f,0.0f, 0.0f,1.0f,//bottom-left
-	    0.5f,-0.5f,0.0f, 1.0f,1.0f,//top-left
-    };
-    std::vector<unsigned int>indices = {  // note that we start from 0!
-        0, 1, 2,  // first Triangle
-        1, 2, 3,   // second Triangle
-    };
-
     Shader program = Shader("SHADERS/vertex.vs","SHADERS/fragment.fs");
     Shader primitive = Shader("SHADERS/primitive.vs","SHADERS/primitive.fs");
 
-    //Model Luigi("MODELS/Rouge/Rouge.gltf");
-    UvSphere cube(5.0f,100,100);
+    Model Luigi("MODELS/Rouge/Rouge.gltf");
+    UvSphere cube(1.5f,32,32);
 
     Camera camera = Camera();
     camera.position.z = -1.5f;
@@ -106,6 +94,15 @@ void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

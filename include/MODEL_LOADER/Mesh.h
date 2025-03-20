@@ -148,6 +148,11 @@ class UvSphere : public Mesh{
 			float deltaLatitude = M_PI / latitudes; //Stack angle step
 			float latitudeAngle; //phi
 			float longitudeAngle; //theta
+					      //
+			if(longitudes < 3)
+				longitudes = 3;
+			if(latitudes < 2)
+				latitudes = 2;
 
 			for(int i = 0; i <= latitudes; ++i){
 				latitudeAngle = M_PI / 2 - i * deltaLatitude; //Starting from -90 to 90
@@ -160,7 +165,7 @@ class UvSphere : public Mesh{
 					float y = xy * sin(longitudeAngle); 
 					float s = (float)j/longitudes;
 					float t = (float)i/latitudes;
-					buffer.push_back(x); buffer.push_back(y);buffer.push_back(z); buffer.push_back(s); buffer.push_back(t);
+					buffer.push_back(x); buffer.push_back(z);buffer.push_back(y); buffer.push_back(s); buffer.push_back(t);
 				}
 			}
 			//Indices
@@ -191,4 +196,12 @@ class UvSphere : public Mesh{
 			setUpPrimitive(buffer,indices);
 		}
 };
+
+class Capsule : public Mesh{
+	public:
+		vector<float>buffer;
+		Capsule(float radius, int height,int latitudes,int longitudes){ //Slices = longitudes, Stacks = latitudes
+		}
+};
+
 #endif
