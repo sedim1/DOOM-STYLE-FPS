@@ -61,8 +61,8 @@ int main()
     Shader program = Shader("SHADERS/vertex.vs","SHADERS/fragment.fs");
     Shader primitive = Shader("SHADERS/primitive.vs","SHADERS/primitive.fs");
 
-    Model Luigi("MODELS/Rouge/Rouge.gltf");
-    //Cube cube(5.0f,5.0f,5.0);
+    //Model Luigi("MODELS/Rouge/Rouge.gltf");
+    UvSphere cube(5.0f,100,100);
 
     Camera camera = Camera();
     camera.position.z = -1.5f;
@@ -89,10 +89,10 @@ int main()
         // -------------------------------------------------------------------------------
 	program.use();
         camera.updateView(program);
-        Luigi.Draw(program);
+        //Luigi.Draw(program);
         primitive.use();
         camera.updateView(primitive);
-        //cube.drawMesh(primitive);
+        cube.drawMesh(primitive);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

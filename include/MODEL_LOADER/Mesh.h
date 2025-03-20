@@ -143,36 +143,52 @@ class Cube : public Mesh{
 class UvSphere : public Mesh{
 	public:
 		vector<float>buffer;
-		UvSphere(float radious,int nSlices,int nStacks){ //Slices = longitudes, Stacks += latitudes
-			float stackStep = 1.0f/(float)nStacks;
-			float sliceStep = 1.0f/(float)nSlices;
-			float angleStep = 90.0f/(float)nStacks;
-			float angleDegree = 0.0f;
-			vector<float> uv;
-			vector<float>topVertex = {0.0f,1.0f,0.0f};
-			vector<float>bottomBottom = {0.0f,-1.0f,0.0f};
-			vector<float> top;
-			vector<float> bottom;
-			//Generate the vertices the sphere is going to have (vertices of top and botom stacks)
-			for(float y = 0.0f; y < 1.0f; y += stackStep)
-			{
-				//Calculate radious
-				float nRadius;
-				if(y == 0.0f){
-					nRadius = 1.0f;
+		UvSphere(float radius,int latitudes,int longitudes){ //Slices = longitudes, Stacks = latitudes
+			float deltaLongitude = 2 * M_PI / longitudes; //Slice angle step
+			float deltaLatitude = M_PI / latitudes; //Stack angle step
+			float latitudeAngle; //phi
+			float longitudeAngle; //theta
+
+			for(int i = 0; i <= latitudes; ++i){
+				latitudeAngle = M_PI / 2 - i * deltaLatitude; //Starting from -90 to 90
+				float xy = radius * cos(latitudeAngle); //r * cos(phi)
+				float z = radius * sin(latitudeAngle); //r * sin(phi)
+
+				for(int j = 0; j <= longitudes; ++j){
+					longitudeAngle = j * deltaLongitude;
+					float x = xy * cos(longitudeAngle);  
+					float y = xy * sin(longitudeAngle); 
+					float s = (float)j/longitudes;
+					float t = (float)i/latitudes;
+					buffer.push_back(x); buffer.push_back(y);buffer.push_back(z); buffer.push_back(s); buffer.push_back(t);
 				}
-				else{
-					nRadious = y / tan(radians(angleDegree));
-				}
-				//Calculate vertices of current stack with parametric ecuation of the circle
-				for(float t = 0; t < 1.0f;t += sliceStep){
-					float x = (cos(t) * nRadius) * radious;
-					float z = (sin(t) * nRadius) * radious;
-					top.push_back(x);top.push_back(y);top.push_back(z);
-					bottom.push_back(-x);bottom.push_back(-y);bottom.push_back(-z);
-				}
-				angleDegree+=angleStep;
 			}
+			//Indices
+			unsigned int k1, k2;
+			 for(int i = 0; i < latitudes; ++i)
+			{
+				k1 = i * (longitudes + 1);
+				k2 = k1 + longitudes + 1;
+				// 2 Triangles per latitude block excluding the first and last longitudes blocks
+				for(int j = 0; j < longitudes; ++j, ++k1, ++k2)
+				{
+					if (i != 0)
+					{
+						indices.push_back(k1);
+						indices.push_back(k2);
+						indices.push_back(k1 + 1);
+					}
+
+					if (i != (latitudes - 1))
+					{
+						indices.push_back(k1 + 1);
+						indices.push_back(k2);
+						indices.push_back(k2 + 1);
+					}
+				}
+			}
+			textures.push_back(Texture("TEXTURES/sampler.jpg",0,0));
+			setUpPrimitive(buffer,indices);
 		}
 };
 #endif
