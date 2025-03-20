@@ -1,8 +1,11 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include <iostream>
 #include <vector>
 #include <string>
+#include <glm/glm.hpp>
+#include <cmath>
 #include "BO.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -22,6 +25,16 @@ class Mesh{
 			vbo.MeshData(vertices);
 			ebo.IndexData(indices);
 			vao.AttribMesh(vertices);
+			vao.Unbind();
+			vbo.Unbind();
+			ebo.Unbind();
+		}
+		void setUpPrimitive(vector<float>& data,vector<unsigned int>& faces){
+			vao.Bind();
+			vbo.Data(data);
+			ebo.IndexData(faces);
+			vao.Attrib(0,3,5,0); //Positions
+			vao.Attrib(1,2,5,3); //Texture Coordinates
 			vao.Unbind();
 			vbo.Unbind();
 			ebo.Unbind();
@@ -68,18 +81,7 @@ class Plane : public Mesh{
 				buffer[i+2] *= z;
 			}
 			textures.push_back(Texture("TEXTURES/sampler.jpg",0,0));
-			setUpMesh();
-		}
-
-		void setUpMesh(){
-			vao.Bind();
-			vbo.Data(buffer);
-			ebo.IndexData(indices);
-			vao.Attrib(0,3,5,0);
-			vao.Attrib(1,2,5,3);
-			vao.Unbind();
-			vbo.Unbind();
-			ebo.Unbind();
+			setUpPrimitive(buffer,indices);
 		}
 };
 
@@ -134,19 +136,43 @@ class Cube : public Mesh{
 			}
 			indices = faces;
 			textures.push_back(Texture("TEXTURES/sampler.jpg",0,0));
-			setUpMesh();
+			setUpPrimitive(buffer,indices);
 		}
+};
 
-		void setUpMesh(){
-			vao.Bind();
-			vbo.Data(buffer);
-			ebo.IndexData(indices);
-			vao.Attrib(0,3,5,0);
-			vao.Attrib(1,2,5,3);
-			vao.Unbind();
-			vbo.Unbind();
-			ebo.Unbind();
+class UvSphere : public Mesh{
+	public:
+		vector<float>buffer;
+		UvSphere(float radious,int nSlices,int nStacks){ //Slices = longitudes, Stacks += latitudes
+			float stackStep = 1.0f/(float)nStacks;
+			float sliceStep = 1.0f/(float)nSlices;
+			float angleStep = 90.0f/(float)nStacks;
+			float angleDegree = 0.0f;
+			vector<float> uv;
+			vector<float>topVertex = {0.0f,1.0f,0.0f};
+			vector<float>bottomBottom = {0.0f,-1.0f,0.0f};
+			vector<float> top;
+			vector<float> bottom;
+			//Generate the vertices the sphere is going to have (vertices of top and botom stacks)
+			for(float y = 0.0f; y < 1.0f; y += stackStep)
+			{
+				//Calculate radious
+				float nRadius;
+				if(y == 0.0f){
+					nRadius = 1.0f;
+				}
+				else{
+					nRadious = y / tan(radians(angleDegree));
+				}
+				//Calculate vertices of current stack with parametric ecuation of the circle
+				for(float t = 0; t < 1.0f;t += sliceStep){
+					float x = (cos(t) * nRadius) * radious;
+					float z = (sin(t) * nRadius) * radious;
+					top.push_back(x);top.push_back(y);top.push_back(z);
+					bottom.push_back(-x);bottom.push_back(-y);bottom.push_back(-z);
+				}
+				angleDegree+=angleStep;
+			}
 		}
-
 };
 #endif

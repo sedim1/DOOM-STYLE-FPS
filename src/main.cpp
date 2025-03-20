@@ -62,7 +62,7 @@ int main()
     Shader primitive = Shader("SHADERS/primitive.vs","SHADERS/primitive.fs");
 
     Model Luigi("MODELS/Rouge/Rouge.gltf");
-    Cube cube(5.0f,5.0f,5.0);
+    //Cube cube(5.0f,5.0f,5.0);
 
     Camera camera = Camera();
     camera.position.z = -1.5f;
@@ -92,7 +92,7 @@ int main()
         Luigi.Draw(program);
         primitive.use();
         camera.updateView(primitive);
-        cube.drawMesh(primitive);
+        //cube.drawMesh(primitive);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
