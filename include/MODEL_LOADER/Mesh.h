@@ -20,8 +20,8 @@ class Mesh{
 		vector<Vertex>vertices;
 		vector<unsigned int>indices;
 		vector<Texture>textures;
-		vec3 albedo = vec3(1.0f,0.0f,0.0f); //Mesh Color
-		bool visibleTexture = true;
+		vec4 albedo = vec4(1.0f,0.0f,0.0f,1.0f); //Mesh Color
+		bool visibleTexture = false;
 		void setUpMesh(){
 			vao.Bind();
 			vbo.MeshData(vertices);
@@ -50,8 +50,10 @@ class Mesh{
 			setUpMesh();
 		}
 		void drawMesh(Shader& program){
-			if(textures.size()!=0){
-				for(int i = 0; i < textures.size() && visibleTexture;i++){
+			program.setBool(visibleTexture,"visibleTexture");//Set flag to view texture
+			program.setVector4f(albedo,"albedo");//Send mesh albedo color to shader
+			if(textures.size()!=0 && visibleTexture){
+				for(int i = 0; i < textures.size();i++){
 					string uniform = "texture" + to_string(i);
 					textures[i].texUnit(program,uniform.data(),i);
 					textures[i].BindTexture(program);

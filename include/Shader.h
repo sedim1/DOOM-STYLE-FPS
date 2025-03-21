@@ -100,6 +100,19 @@ class Shader{
 				std::cout<<"ERROR::Could not assign "<<x<<" to "<<uniform<<" because it is not found::"<<std::endl;
 			}
 		}
+		void setBool(bool x,const char* uniform){
+			use();
+			int location = glGetUniformLocation(id,uniform);
+			if(x == true)
+				glUniform1i(location,1);
+			else
+				glUniform1i(location,0);
+		}
+		void setVector4f(glm::vec4 v,const char* uniform){
+			use();
+			int location = glGetUniformLocation(id,uniform);
+			glUniform4f(location,v.x,v.y,v.z,v.w);
+		}
 };
 
 #endif
