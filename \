@@ -57,8 +57,8 @@ int main()
     cube.visibleTexture = true;
     //Plane cube(2.0f,2.0f);
     Transform transform;
-    transform.translation.x = -2.0f;
-    transform.translation.z = -6.0f;
+    transform.translation.y = 2.0f;
+    transform.translation.z = 6.0f;
 
     Camera camera = Camera();
     camera.updateProjection(SCR_WIDTH,SCR_HEIGHT,program);

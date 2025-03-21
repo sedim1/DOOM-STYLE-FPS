@@ -32,7 +32,7 @@ class Camera{
 		Camera(){
 			fov = 45.0f;
 			position = vec3(0.0f,0.0f,0.0f);
-			direction = vec3(0.0f,0.0f,1.0f);
+			direction = vec3(0.0f,0.0f,-1.0f);
 			up = vec3(0.0f,1.0f,0.0f);
 			view = mat4(1.0f);
 			projection = mat4(1.0f);
@@ -40,7 +40,7 @@ class Camera{
 			Near = 0.1f;
 			Far = 100.0f;
 			yaw = pitch = roll = 0.0f;
-			yaw = 90.0f;
+			yaw = -90.0f;
 		}
 		void updateProjection(int w,int h,Shader& program)
 		{
