@@ -49,12 +49,12 @@ int main()
     Shader program = Shader("SHADERS/vertex.vs","SHADERS/fragment.fs");
     Shader primitive = Shader("SHADERS/primitive.vs","SHADERS/primitive.fs");
 
-    Model Luigi("MODELS/Rouge/Rouge.gltf");
-    UvSphere cube(1.5f,32,32);
+    //Model Luigi("MODELS/Rouge/Rouge.gltf");
+    Capsule cube(0.5f,2.0f,32,32);
 
     Camera camera = Camera();
     camera.position.z = -1.5f;
-    camera.position.y = 1.0f;
+    //camera.position.y = 1.0f;
     camera.updateProjection(SCR_WIDTH,SCR_HEIGHT,program);
     camera.updateProjection(SCR_WIDTH,SCR_HEIGHT,primitive);
 

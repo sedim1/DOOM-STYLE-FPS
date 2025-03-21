@@ -165,6 +165,7 @@ class UvSphere : public Mesh{
 					float y = xy * sin(longitudeAngle); 
 					float s = (float)j/longitudes;
 					float t = (float)i/latitudes;
+					//Pushing z before y so it can be generated vertically
 					buffer.push_back(x); buffer.push_back(z);buffer.push_back(y); buffer.push_back(s); buffer.push_back(t);
 				}
 			}
@@ -200,7 +201,66 @@ class UvSphere : public Mesh{
 class Capsule : public Mesh{
 	public:
 		vector<float>buffer;
-		Capsule(float radius, int height,int latitudes,int longitudes){ //Slices = longitudes, Stacks = latitudes
+		//Quick note, radius must be half or less the height of the capsule
+		Capsule(float radius,float height,int latitudes,int longitudes){ //Slices = longitudes, Stacks = latitudes
+			float deltaLongitude = 2 * M_PI / longitudes; //Slice angle step
+			float deltaLatitude = M_PI / latitudes; //Stack angle step
+			float latitudeAngle; //phi
+			float longitudeAngle; //theta
+			if(radius >=  height/2)
+				radius = height/2;
+			float cylinderHeight = (height - 2.0f * radius);
+			if(longitudes < 3)
+				longitudes = 3;
+			if(latitudes < 2)
+				latitudes = 2;
+			cout << "Cylinder Height: "<<cylinderHeight<<endl;
+			for(int i = 0; i <= latitudes; ++i){
+				latitudeAngle = M_PI / 2 - i * deltaLatitude; //Starting from -90 to 90
+				float xy = radius * cos(latitudeAngle); //r * cos(phi)
+				float z = radius * sin(latitudeAngle); //r * sin(phi)
+
+				for(int j = 0; j <= longitudes; ++j){
+					longitudeAngle = j * deltaLongitude;
+					float x = xy * cos(longitudeAngle);  
+					float y = xy * sin(longitudeAngle); 
+					float s = (float)j/longitudes;
+					float t = (float)i/latitudes;
+					float zOffset = (z > 0.0f) ? (cylinderHeight / 2 + z) : (-cylinderHeight/2 + z);
+					//Pushing z before y so it can be generated vertically
+					buffer.push_back(x);
+					buffer.push_back(zOffset);
+					buffer.push_back(y); 
+					buffer.push_back(s); 
+					buffer.push_back(t);
+				}
+			}
+			//Indices
+			unsigned int k1, k2;
+			 for(int i = 0; i < latitudes; ++i)
+			{
+				k1 = i * (longitudes + 1);
+				k2 = k1 + longitudes + 1;
+				// 2 Triangles per latitude block excluding the first and last longitudes blocks
+				for(int j = 0; j < longitudes; ++j, ++k1, ++k2)
+				{
+					if (i != 0)
+					{
+						indices.push_back(k1);
+						indices.push_back(k2);
+						indices.push_back(k1 + 1);
+					}
+
+					if (i != (latitudes - 1))
+					{
+						indices.push_back(k1 + 1);
+						indices.push_back(k2);
+						indices.push_back(k2 + 1);
+					}
+				}
+			}
+			textures.push_back(Texture("TEXTURES/sampler.jpg",0,0));
+			setUpPrimitive(buffer,indices);
 		}
 };
 
