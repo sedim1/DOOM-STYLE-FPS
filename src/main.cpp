@@ -47,10 +47,13 @@ int main()
     } 
 
     Shader program = Shader("SHADERS/vertex.vs","SHADERS/fragment.fs");
-    Shader primitive = Shader("SHADERS/primitive.vs","SHADERS/primitive.fs");
+    Shader primitive = Shader("SHADERS/Primitive/vertexShader.vs","SHADERS/Primitive/fragmentShader.fs");
 
     //Model Luigi("MODELS/Rouge/Rouge.gltf");
-    Capsule cube(0.5f,2.0f,32,32);
+    //Capsule cube(0.5f,2.0f,32,32);
+    //UvSphere cube(2.0f,32,32);
+    Cube cube(2.0f,2.0f,2.0f);
+    //Plane cube(2.0f,2.0f);
 
     Camera camera = Camera();
     camera.position.z = -1.5f;
@@ -59,6 +62,8 @@ int main()
     camera.updateProjection(SCR_WIDTH,SCR_HEIGHT,primitive);
 
     glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
     // render loop
     // -----------

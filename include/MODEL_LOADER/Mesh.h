@@ -20,6 +20,8 @@ class Mesh{
 		vector<Vertex>vertices;
 		vector<unsigned int>indices;
 		vector<Texture>textures;
+		vec3 albedo = vec3(1.0f,0.0f,0.0f); //Mesh Color
+		bool visibleTexture = true;
 		void setUpMesh(){
 			vao.Bind();
 			vbo.MeshData(vertices);
@@ -33,8 +35,9 @@ class Mesh{
 			vao.Bind();
 			vbo.Data(data);
 			ebo.IndexData(faces);
-			vao.Attrib(0,3,5,0); //Positions
-			vao.Attrib(1,2,5,3); //Texture Coordinates
+			vao.Attrib(0,3,8,0); //Positions
+			vao.Attrib(1,2,8,3); //Texture Coordinates
+			vao.Attrib(2,3,8,5); //Normals
 			vao.Unbind();
 			vbo.Unbind();
 			ebo.Unbind();
@@ -48,7 +51,7 @@ class Mesh{
 		}
 		void drawMesh(Shader& program){
 			if(textures.size()!=0){
-				for(int i = 0; i < textures.size();i++){
+				for(int i = 0; i < textures.size() && visibleTexture;i++){
 					string uniform = "texture" + to_string(i);
 					textures[i].texUnit(program,uniform.data(),i);
 					textures[i].BindTexture(program);
@@ -65,18 +68,18 @@ class Mesh{
 class Plane : public Mesh{
 	public:
 		vector<float>buffer={
-			//Positions       //TexCoords
-			-1.0f,0.0f,1.0f,   0.0f, 0.0f,
-			 1.0f,0.0f,1.0f,   1.0f, 0.0f,
-			-1.0f,0.0f,-1.0f,  0.0f, 1.0f,
-			 1.0f,0.0f,-1.0f,  1.0f, 1.0f, 
+			//Positions       //TexCoords //Normals
+			-1.0f,0.0f,1.0f,   0.0f, 0.0f, 0.0f,1.0f,0.0f,
+			 1.0f,0.0f,1.0f,   1.0f, 0.0f, 0.0f,1.0f,0.0f,
+			-1.0f,0.0f,-1.0f,  0.0f, 1.0f, 0.0f,1.0f,0.0f,
+			 1.0f,0.0f,-1.0f,  1.0f, 1.0f, 0.0f,1.0f,0.0f,
 		};
 		Plane(float x,float z){
 			//Set indices
 			vector<unsigned int> faces = {0,1,2,1,2,3};
 			indices = faces;
 			//Define buffer data
-			for(int i = 0; i < buffer.size();i += 5){
+			for(int i = 0; i < buffer.size();i += 8){
 				buffer[i] *= x;
 				buffer[i+2] *= z;
 			}
@@ -88,30 +91,37 @@ class Plane : public Mesh{
 class Cube : public Mesh{
 	public:
 		vector<float>buffer={
-		       -1.0f,1.0f,1.0f,  0.0f, 0.0f,
-		        1.0f,1.0f,1.0f,  1.0f, 0.0f,
-		       -1.0f,-1.0f,1.0f, 0.0f, 1.0f,
-		        1.0f,-1.0f,1.0f, 1.0f, 1.0f,
-		       -1.0f,1.0f,-1.0f, 0.0f, 0.0f,
-		       -1.0f,1.0f, 1.0f, 1.0f, 0.0f,
-		       -1.0f,-1.0f,-1.0f, 0.0f, 1.0f,
-		       -1.0f,-1.0f,1.0f, 1.0f, 1.0f,
-		       1.0f,1.0f,-1.0f, 0.0f, 0.0f,
-		       1.0f,1.0f, 1.0f, 1.0f, 0.0f,
-		       1.0f,-1.0f,-1.0f, 0.0f, 1.0f,
-		       1.0f,-1.0f,1.0f, 1.0f, 1.0f,
-		       -1.0f,1.0f,-1.0f,  0.0f, 0.0f,
-		        1.0f,1.0f,-1.0f,  1.0f, 0.0f,
-		       -1.0f,-1.0f,-1.0f, 0.0f, 1.0f,
-		        1.0f,-1.0f,-1.0f, 1.0f, 1.0f,
-		       -1.0f,1.0f,-1.0f,  0.0f, 0.0f,
-		        1.0f,1.0f,-1.0f,  1.0f, 0.0f,
-		       -1.0f,1.0f,1.0f,  0.0f, 1.0f,
-		        1.0f,1.0f,1.0f,   1.0f, 1.0f,
-		       -1.0f,-1.0f,-1.0f,  0.0f, 0.0f,
-		        1.0f,-1.0f,-1.0f,  1.0f, 0.0f,
-		       -1.0f,-1.0f,1.0f,   0.0f, 1.0f,
-		        1.0f,-1.0f,1.0f,   1.0f, 1.0f
+			//Position      TexCoords    Normals
+			//Front
+		       -1.0f,1.0f,1.0f,  0.0f, 0.0f, 0.0f,0.0f,1.0f,
+		        1.0f,1.0f,1.0f,  1.0f, 0.0f, 0.0f,0.0f,1.0f,
+		       -1.0f,-1.0f,1.0f, 0.0f, 1.0f, 0.0f,0.0f,1.0f,
+		        1.0f,-1.0f,1.0f, 1.0f, 1.0f, 0.0f,0.0f,1.0f,
+			//left
+		       -1.0f,1.0f,-1.0f,  0.0f, 0.0f, -1.0f,0.0f,0.0f,
+		       -1.0f,1.0f, 1.0f,  1.0f, 0.0f, -1.0f,0.0f,0.0f,
+		       -1.0f,-1.0f,-1.0f, 0.0f, 1.0f, -1.0f,0.0f,0.0f,
+		       -1.0f,-1.0f,1.0f,  1.0f, 1.0f, -1.0f,0.0f,0.0f,
+		       //Right
+		       1.0f,1.0f,-1.0f,   0.0f, 0.0f,  -1.0f,0.0f,0.0f,
+		       1.0f,1.0f, 1.0f,  1.0f, 0.0f,   -1.0f,0.0f,0.0f,
+		       1.0f,-1.0f,-1.0f, 0.0f, 1.0f,   -1.0f,0.0f,0.0f,
+		       1.0f,-1.0f,1.0f,  1.0f, 1.0f,   -1.0f,0.0f,0.0f,
+		       //Back
+		       -1.0f,1.0f,-1.0f,  0.0f, 0.0f, 0.0f,0.0f,-1.0f,
+		        1.0f,1.0f,-1.0f,  1.0f, 0.0f, 0.0f,0.0f,-1.0f,
+		       -1.0f,-1.0f,-1.0f, 0.0f, 1.0f, 0.0f,0.0f,-1.0f,
+		        1.0f,-1.0f,-1.0f, 1.0f, 1.0f, 0.0f,0.0f,-1.0f,
+			//Top
+		       -1.0f,1.0f,-1.0f,  0.0f, 0.0f, 0.0f,1.0f,0.0f,
+		        1.0f,1.0f,-1.0f,  1.0f, 0.0f, 0.0f,1.0f,0.0f,
+		       -1.0f,1.0f,1.0f,  0.0f, 1.0f,  0.0f,1.0f,0.0f,
+		        1.0f,1.0f,1.0f,   1.0f, 1.0f, 0.0f,1.0f,0.0f,
+			//Bottom
+		       -1.0f,-1.0f,-1.0f,  0.0f, 0.0f, 0.0f,-1.0f,0.0f,
+		        1.0f,-1.0f,-1.0f,  1.0f, 0.0f, 0.0f,-1.0f,0.0f,
+		       -1.0f,-1.0f,1.0f,   0.0f, 1.0f, 0.0f,-1.0f,0.0f,
+		        1.0f,-1.0f,1.0f,   1.0f, 1.0f, 0.0f,-1.0f,0.0f,
 		};
 
 		Cube(float x, float y, float z){
@@ -129,7 +139,7 @@ class Cube : public Mesh{
 				20,21,22,
 				21,22,23,
 			};
-			for(int i = 0; i < buffer.size();i+=5){
+			for(int i = 0; i < buffer.size();i+=8){
 				buffer[i] *= x;
 				buffer[i+1] *= y;
 				buffer[i+2] *= z;
@@ -148,7 +158,7 @@ class UvSphere : public Mesh{
 			float deltaLatitude = M_PI / latitudes; //Stack angle step
 			float latitudeAngle; //phi
 			float longitudeAngle; //theta
-					      //
+			float lengthInv = 1.0f / radius;
 			if(longitudes < 3)
 				longitudes = 3;
 			if(latitudes < 2)
@@ -165,8 +175,13 @@ class UvSphere : public Mesh{
 					float y = xy * sin(longitudeAngle); 
 					float s = (float)j/longitudes;
 					float t = (float)i/latitudes;
+					float nx = x * lengthInv;
+					float ny = y * lengthInv;
+					float nz = z * lengthInv;
 					//Pushing z before y so it can be generated vertically
 					buffer.push_back(x); buffer.push_back(z);buffer.push_back(y); buffer.push_back(s); buffer.push_back(t);
+					buffer.push_back(nx); buffer.push_back(nz); buffer.push_back(ny);
+
 				}
 			}
 			//Indices
@@ -210,6 +225,7 @@ class Capsule : public Mesh{
 			if(radius >=  height/2)
 				radius = height/2;
 			float cylinderHeight = (height - 2.0f * radius);
+			float lengthInv = 1.0f / radius;
 			if(longitudes < 3)
 				longitudes = 3;
 			if(latitudes < 2)
@@ -226,13 +242,18 @@ class Capsule : public Mesh{
 					float y = xy * sin(longitudeAngle); 
 					float s = (float)j/longitudes;
 					float t = (float)i/latitudes;
+					float nx = x * lengthInv;
+					float ny = y * lengthInv;
+					float nz = z * lengthInv;
 					float zOffset = (z > 0.0f) ? (cylinderHeight / 2 + z) : (-cylinderHeight/2 + z);
+					float nzOffset = (z > 0.0f) ? (cylinderHeight / 2 + nz) : (-cylinderHeight/2 + nz);
 					//Pushing z before y so it can be generated vertically
 					buffer.push_back(x);
 					buffer.push_back(zOffset);
 					buffer.push_back(y); 
 					buffer.push_back(s); 
 					buffer.push_back(t);
+					buffer.push_back(nx); buffer.push_back(nzOffset); buffer.push_back(ny);
 				}
 			}
 			//Indices
