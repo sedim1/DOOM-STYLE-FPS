@@ -248,14 +248,14 @@ class Capsule : public Mesh{
 					float ny = y * lengthInv;
 					float nz = z * lengthInv;
 					float zOffset = (z > 0.0f) ? (cylinderHeight / 2 + z) : (-cylinderHeight/2 + z);
-					float nzOffset = (z > 0.0f) ? (cylinderHeight / 2 + nz) : (-cylinderHeight/2 + nz);
+					//float nzOffset = (z > 0.0f) ? (cylinderHeight / 2 + nz) : (-cylinderHeight/2 + nz);
 					//Pushing z before y so it can be generated vertically
 					buffer.push_back(x);
 					buffer.push_back(zOffset);
 					buffer.push_back(y); 
 					buffer.push_back(s); 
 					buffer.push_back(t);
-					buffer.push_back(nx); buffer.push_back(nzOffset); buffer.push_back(ny);
+					buffer.push_back(nx); buffer.push_back(nz); buffer.push_back(ny);
 				}
 			}
 			//Indices

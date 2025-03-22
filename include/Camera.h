@@ -79,15 +79,16 @@ class Camera{
 			direction.x = cos(radians(yaw)) * cos(radians(pitch));
 			direction.y = sin(radians(pitch));
 			direction.z = sin(radians(yaw)) * cos(radians(pitch));
+			direction = normalize(direction);
 
 			if(glfwGetKey(w, GLFW_KEY_W) == GLFW_PRESS)
 				position += (direction * steps);
 			if(glfwGetKey(w, GLFW_KEY_S) == GLFW_PRESS)
 				position -= (direction * steps);
 			if(glfwGetKey(w, GLFW_KEY_D) == GLFW_PRESS)
-				position += (normalize(cross(direction,up)) * steps);
+				position += ((cross(direction,up)) * steps);
 			if(glfwGetKey(w, GLFW_KEY_A) == GLFW_PRESS)
-				position -= (normalize(cross(direction,up)) * steps);
+				position -= ((cross(direction,up)) * steps);
 			if(glfwGetKey(w, GLFW_KEY_E) == GLFW_PRESS)
 				position.y += steps;
 			if(glfwGetKey(w, GLFW_KEY_Q) == GLFW_PRESS)

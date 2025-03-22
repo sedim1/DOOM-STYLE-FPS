@@ -29,7 +29,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Project", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -51,14 +51,18 @@ int main()
     Shader primitive = Shader("SHADERS/Primitive/vertexShader.vs","SHADERS/Primitive/fragmentShader.fs");
 
     //Model Luigi("MODELS/Rouge/Rouge.gltf");
-    //Capsule cube(0.5f,2.0f,32,32);
+    Capsule capsule(1.0f,4.5f,16,16);
     //UvSphere cube(2.0f,32,32);
     Cube cube(1.0f,1.0f,1.0f);
     cube.visibleTexture = true;
+    capsule.visibleTexture = true;
     //Plane cube(2.0f,2.0f);
     Transform transform;
+    Transform transform2;
     transform.translation.x = -2.0f;
     transform.translation.z = -6.0f;
+    transform2.translation.x = 2.0f;
+    transform2.translation.z = -6.0f;
 
     Camera camera = Camera();
     camera.updateProjection(SCR_WIDTH,SCR_HEIGHT,program);
@@ -84,6 +88,8 @@ int main()
         // -------------------------------------------------------------------------------
         transform.rotation.x += 1.0f;
         transform.rotation.y += 1.0f;
+        transform2.rotation.x -= 1.0f;
+        transform2.rotation.y -= 1.0f;
 	program.use();
         camera.updateView(program);
         //Luigi.Draw(program);
@@ -91,6 +97,8 @@ int main()
         primitive.setMatrix4f(transform.GetModelMatrix(),"model");
         camera.updateView(primitive);
         cube.drawMesh(primitive);
+        primitive.setMatrix4f(transform2.GetModelMatrix(),"model");
+        capsule.drawMesh(primitive);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
